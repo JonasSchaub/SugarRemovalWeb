@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 Jonas Schaub, Achim Zielesny, Christoph Steinbeck, Maria Sorokina
+ * Copyright (c) $today.year Jonas Schaub, Achim Zielesny, Christoph Steinbeck, Maria Sorokina
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,30 +22,3 @@
  * SOFTWARE.
  */
 
-package de.unijena.cheminf.sugarremovalweb.storage;
-
-
-import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.nio.file.Path;
-import java.util.stream.Stream;
-
-public interface StorageService {
-
-    void init();
-
-    void store(MultipartFile file);
-
-    Stream<Path> loadAll();
-
-    Path load(String filename);
-
-    Resource loadAsResource(String filename);
-
-    void deleteAll();
-
-    void deleteFile(MultipartFile file);
-
-
-}

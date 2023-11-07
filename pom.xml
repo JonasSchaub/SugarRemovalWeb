@@ -350,6 +350,59 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <!-- define a language-specific format -->
+                    <java>
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>src/main/java/org/openscience/cdk/cdkbook/SMILESFormatMatcher.java</exclude>
+                        </excludes>
+                        <encoding>UTF-8</encoding>
+                        <!-- Cleanthat will refactor your code, but it may break your style: apply it before your formatter -->
+                        <cleanthat />
+                        <importOrder>
+                            <order>de,org,com,java,javax</order>
+                        </importOrder>
+                        <removeUnusedImports>
+                            <engine>cleanthat-javaparser-unnecessaryimport</engine>
+                        </removeUnusedImports>
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
+                        <indent>
+                            <tabs>false</tabs>
+                            <spaces>true</spaces>
+                            <spacesPerTab>4</spacesPerTab>
+                        </indent>
+                        <!-- make sure every file has the following copyright header.
+                          optionally, Spotless can set copyright years by digging
+                          through git history (see "license" section below) -->
+                        <licenseHeader>
+                            <file>${project.basedir}/License-header/License-header.txt</file>
+                        </licenseHeader>
+                        <replaceRegex>
+                            <name>Remove wildcard imports</name>
+                            <searchRegex>import\s+[^\*\s]+\*;(\r\n|\r|\n)</searchRegex>
+                            <replacement>$1</replacement>
+                        </replaceRegex>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
     </build>
