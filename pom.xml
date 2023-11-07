@@ -27,28 +27,83 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.5.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.1.2</version>
     </parent>
+
     <groupId>de.unijena.cheminf</groupId>
     <artifactId>sugarremovalweb</artifactId>
     <version>1.1.0.0</version>
     <name>SugarRemovalWeb</name>
     <description>Web application for sugar removal</description>
+    <url>https://github.com/JonasSchaub/SugarRemovalWeb</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <docker.image.prefix>sugar</docker.image.prefix>
+        <sonar.organization>jonasschaub</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <project.build.source>17</project.build.source>
+        <project.build.target>17</project.build.target>
         <java.version>17</java.version>
         <cdk.version>2.9</cdk.version>
-        <docker.image.prefix>sugar</docker.image.prefix>
+        <spotless.version>2.40.0</spotless.version>
+        <sonar.organization>jonasschaub</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/license/mit/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/JonasSchaub/SugarRemovalWeb</url>
+        <connection>scm:git:git://github.com/JonasSchaub/SugarRemovalWeb.git</connection>
+        <developerConnection>scm:git:git@github.com:JonasSchaub/SugarRemovalWeb.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/JonasSchaub/SugarRemovalWeb/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <name>Jonas Schaub</name>
+            <email>jonas.schaub@uni-jena.de</email>
+            <organization>Friedrich Schiller University Jena</organization>
+            <organizationUrl>https://cheminf.uni-jena.de</organizationUrl>
+        </developer>
+        <developer>
+            <name>Achim Zielesny</name>
+            <email>achim.zielesny@w-hs.de</email>
+            <organization>Westphalian University of Applied Sciences</organization>
+            <organizationUrl>https://www.w-hs.de/service/informationen-zur-person/person/zielesny/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Christoph Steinbeck</name>
+            <email>christoph.steinbeck@uni-jena.de</email>
+            <organization>Friedrich Schiller University Jena</organization>
+            <organizationUrl>https://cheminf.uni-jena.de</organizationUrl>
+        </developer>
+        <developer>
+            <name>Maria Sorokina</name>
+            <organization>Friedrich Schiller University Jena</organization>
+            <organizationUrl>https://cheminf.uni-jena.de</organizationUrl>
+        </developer>
+    </developers>
+
     <dependencies>
-        <!--
+
+        <!-- TODO: causes troubles, needed?
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -56,21 +111,22 @@
             <scope>provided</scope>
         </dependency>
         -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <!-- version fetched from parent -->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <!-- version fetched from parent -->
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -93,12 +149,25 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>io.github.jonasschaub</groupId>
             <artifactId>sru</artifactId>
             <version>1.4.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-bundle</artifactId>
+            <version>${cdk.version}</version>
+        </dependency>
+
+        <!--
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-core</artifactId>
@@ -150,7 +219,6 @@
             <artifactId>cdk-inchi</artifactId>
             <version>${cdk.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-render</artifactId>
@@ -192,22 +260,13 @@
             <version>${cdk.version}</version>
             <type>jar</type>
         </dependency>
-
-
-        <dependency>
-            <groupId>org.openscience.cdk</groupId>
-            <artifactId>cdk-legacy</artifactId>
-            <version>${cdk.version}</version>
-            <type>jar</type>
-        </dependency>
-
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-jniinchi-support</artifactId>
             <version>${cdk.version}</version>
             <type>jar</type>
         </dependency>
-
+-->
 
         <dependency>
             <groupId>org.javatuples</groupId>
@@ -215,7 +274,6 @@
             <version>1.2</version>
             <scope>compile</scope>
         </dependency>
-
 
         <!-- webjar bootstrap and jquery dependencies -->
         <dependency>
@@ -229,15 +287,21 @@
             <version>3.2.1</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>9.0.39</version>
+        </dependency>
 
     </dependencies>
 
@@ -285,7 +349,9 @@
                     </buildArgs>
                 </configuration>
             </plugin>
+
         </plugins>
+
     </build>
 
 </project>
