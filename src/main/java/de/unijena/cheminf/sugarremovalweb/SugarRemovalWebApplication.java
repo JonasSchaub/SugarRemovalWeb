@@ -33,17 +33,31 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+/**
+ *
+ */
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
 public class SugarRemovalWebApplication {
+    /**
+     *
+     */
     static String IMAGE_DIR;
 
-
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         IMAGE_DIR = "./moldata/";
         SpringApplication.run(SugarRemovalWebApplication.class, args);
     }
 
+    /**
+     *
+     * @param storageService
+     * @return
+     */
     @Bean
     CommandLineRunner init(StorageService storageService) {
         return (args) -> {
