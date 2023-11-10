@@ -35,6 +35,8 @@ import org.springframework.context.annotation.Bean;
 
 /**
  *
+ *
+ * Configuration class defining CommandLineRunner bean init() method.
  */
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)

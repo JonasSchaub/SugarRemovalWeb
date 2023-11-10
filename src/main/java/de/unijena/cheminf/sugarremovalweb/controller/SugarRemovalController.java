@@ -54,7 +54,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author mSorok

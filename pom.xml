@@ -130,14 +130,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
@@ -158,11 +150,6 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>io.github.jonasschaub</groupId>
@@ -170,13 +157,6 @@
             <version>1.4.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.openscience.cdk</groupId>
-            <artifactId>cdk-bundle</artifactId>
-            <version>${cdk.version}</version>
-        </dependency>
-
-        <!--
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-core</artifactId>
@@ -265,17 +245,22 @@
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-jniinchi-support</artifactId>
+            <version>${cdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-signature</artifactId>
             <version>${cdk.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
-            <artifactId>cdk-jniinchi-support</artifactId>
+            <artifactId>cdk-legacy</artifactId>
             <version>${cdk.version}</version>
             <type>jar</type>
         </dependency>
--->
+
 
         <dependency>
             <groupId>org.javatuples</groupId>
@@ -301,22 +286,9 @@
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>5.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>9.0.39</version>
-        </dependency>
 
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
-        </dependency>
+
+
 
     </dependencies>
 
