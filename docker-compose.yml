@@ -1,3 +1,4 @@
+#TODO update
 version: '3.2'
 
 services:
@@ -8,12 +9,13 @@ services:
     environment:
       VIRTUAL_HOST: sugar.naturalproducts.net
       VIRTUAL_PORT: 8092
+      #update?
       LETSENCRYPT_HOST: sugar.naturalproducts.net
       LETSENCRYPT_EMAIL: maria.ssorokina@gmail.com
     volumes:
     - ./volume:/tmp
 
-
+#network default: network.external.name is deprecated. Please set network.name with external: true
 networks:
   default:
     external:
