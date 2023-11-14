@@ -348,10 +348,14 @@
                             <include>src/main/java/**/*.java</include>
                             <include>src/test/java/**/*.java</include>
                         </includes>
+                        <!--
                         <excludes>
-                            <exclude>src/main/java/org/openscience/cdk/cdkbook/SMILESFormatMatcher.java</exclude>
+                            <exclude></exclude>
                         </excludes>
+                        -->
+                        <!--
                         <encoding>UTF-8</encoding>
+                        -->
                         <!-- Cleanthat will refactor your code, but it may break your style: apply it before your formatter -->
                         <cleanthat />
                         <importOrder>
