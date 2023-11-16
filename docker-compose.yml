@@ -1,5 +1,4 @@
-#TODO update
-version: '3.2'
+version: '3.8'
 
 services:
   sugarweb:
@@ -9,15 +8,18 @@ services:
     environment:
       VIRTUAL_HOST: sugar.naturalproducts.net
       VIRTUAL_PORT: 8092
-      #update?
+      #TODO update?
       LETSENCRYPT_HOST: sugar.naturalproducts.net
       LETSENCRYPT_EMAIL: maria.ssorokina@gmail.com
     volumes:
     - ./volume:/tmp
+    #TODO is this relevant for security? Does it hinder execution in the VM?
+    ports:
+    - "8092:8092"
 
-#network default: network.external.name is deprecated. Please set network.name with external: true
-networks:
-  default:
-    external:
-      name: nginx-proxy
+#TODO: comment-in for use in VM, comment-out for local testing
+#networks:
+  #default:
+    #name: nginx-proxy
+    #external: true
 
