@@ -13,13 +13,6 @@ services:
       LETSENCRYPT_EMAIL: maria.ssorokina@gmail.com
     volumes:
     - ./volume:/tmp
-    #TODO is this relevant for security? Does it hinder execution in the VM?
+    #TODO is this relevant for security? Does it hinder execution in the VM? Comment out for deployment to server?
     ports:
     - "8092:8092"
-
-#TODO: comment-in for use in VM, comment-out for local testing
-#networks:
-  #default:
-    #name: nginx-proxy
-    #external: true
-
