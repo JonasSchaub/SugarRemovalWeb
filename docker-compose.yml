@@ -5,14 +5,7 @@ services:
     build: '.'
     container_name: web_sugar
     restart: always
-    environment:
-      VIRTUAL_HOST: sugar.naturalproducts.net
-      VIRTUAL_PORT: 8092
-      #TODO update?
-      LETSENCRYPT_HOST: sugar.naturalproducts.net
-      LETSENCRYPT_EMAIL: maria.ssorokina@gmail.com
     volumes:
     - ./volume:/tmp
-    #TODO is this relevant for security? Does it hinder execution in the VM? Comment out for deployment to server?
     ports:
     - "8092:8092"
