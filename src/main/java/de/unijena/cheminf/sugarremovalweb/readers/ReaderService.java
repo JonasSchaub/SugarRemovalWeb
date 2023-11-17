@@ -24,7 +24,6 @@
 
 package de.unijena.cheminf.sugarremovalweb.readers;
 
-
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +31,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+/**
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @Service
 public class ReaderService {
 

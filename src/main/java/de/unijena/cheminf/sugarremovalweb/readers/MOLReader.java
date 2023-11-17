@@ -47,6 +47,9 @@ import java.util.UUID;
 
 import net.sf.jniinchi.INCHI_OPTION;
 
+/**
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 public class MOLReader implements IReader {
 
 

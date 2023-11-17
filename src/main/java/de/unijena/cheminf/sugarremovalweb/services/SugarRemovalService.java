@@ -24,11 +24,6 @@
 
 package de.unijena.cheminf.sugarremovalweb.services;
 
-/**
- * @author Jonas Schaub
- * @author Maria Sorokina
- */
-
 import de.unijena.cheminf.sugarremovalweb.misc.MoleculeConnectivityChecker;
 import de.unijena.cheminf.sugarremovalweb.model.ProcessedMolecule;
 import de.unijena.cheminf.sugarremovalweb.model.SubmittedMoleculeData;
@@ -70,9 +65,13 @@ import java.util.Set;
 
 import net.sf.jniinchi.INCHI_OPTION;
 
+/**
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok), Jonas Schaub (https://github.com/JonasSchaub)
+ */
 @Service
 public class SugarRemovalService {
-
 
     public static enum StructuresToKeepMode {
         ALL (0),
@@ -86,8 +85,6 @@ public class SugarRemovalService {
             return this.defaultThreshold;
         }
     }
-
-
 
     public static final String[] LINEAR_SUGARS_SMILES = {
             //*aldoses*
@@ -137,7 +134,6 @@ public class SugarRemovalService {
     public static final SmartsPattern ETHER_SMARTS_PATTERN = SmartsPattern.create("[C]-[O!R]-[C]");
     public static final SmartsPattern PEROXIDE_SMARTS_PATTERN = SmartsPattern.create("[C]-[O!R]-[O!R]-[C]");
 
-
     UniversalIsomorphismTester universalIsomorphismTester ;
 
     @Autowired
@@ -145,9 +141,6 @@ public class SugarRemovalService {
 
     @Autowired
     ReaderService readerService;
-
-
-
 
     private List<IAtomContainer> ringSugars;
     private List<IAtomContainer> linearSugars;
@@ -167,14 +160,9 @@ public class SugarRemovalService {
     private int linearSugarCandidateMinSize;
     private int linearSugarCandidateMaxSize;
 
-
     private boolean setPropertyOfSugarContainingMolecules;
 
-
-
-
     ProcessedMolecule removeSugarsFromAtomContainer(IAtomContainer  moleculeToProcess, SubmittedMoleculeData submittedMoleculeData){
-
 
         ProcessedMolecule molecule = new ProcessedMolecule();
 
@@ -186,8 +174,6 @@ public class SugarRemovalService {
         options.add(INCHI_OPTION.SNon);
         options.add(INCHI_OPTION.ChiralFlagOFF);
         options.add(INCHI_OPTION.AuxNone);
-
-
 
         try {
             molecule.setSmiles(smilesGenerator.create(moleculeToProcess));
@@ -330,7 +316,7 @@ public class SugarRemovalService {
                         }
 
                     }
-                    if (submittedMoleculeData.getSugarsToRemove().contains("terminalLnearSugars")) {
+                    if (submittedMoleculeData.getSugarsToRemove().contains("terminalLinearSugars")) {
 
                         molecule.sugarsToRemove.add("terminalLinear");
                         setRemoveOnlyTerminalSugars(true);
@@ -347,10 +333,6 @@ public class SugarRemovalService {
                             return null;
                         }
                     }
-
-
-
-
 
                     //add to the list to return
                     try {
@@ -406,11 +388,9 @@ public class SugarRemovalService {
         return molecule;
     }
 
-
-
-
     /**
      * Processes the molecules submitted as a SMILES string or a draw (also SMILES)
+     *
      * @param submittedMoleculeData
      * @return
      */
@@ -452,9 +432,9 @@ public class SugarRemovalService {
         return processedMolecules;
     }
 
-
     /**
      * Processes the molecules submitted as a file
+     *
      * @param submittedMoleculeData
      * @param file
      * @return
@@ -484,13 +464,8 @@ public class SugarRemovalService {
         else{
             return processedMolecules;
         }
-
-
         return processedMolecules;
-
     }
-
-
 
     /******************** Actual sugar removal methods *****************************/
 
@@ -534,8 +509,6 @@ public class SugarRemovalService {
             }
         }
 
-
-
         this.detectGlycosidicBond = DETECT_GLYCOSIDIC_BOND_DEFAULT;
         this.removeOnlyTerminal = REMOVE_ONLY_TERMINAL_DEFAULT;
         this.structuresToKeepMode = STRUCTURES_TO_KEEP_MODE_DEFAULT;
@@ -547,7 +520,6 @@ public class SugarRemovalService {
         this.setPropertyOfSugarContainingMolecules = SET_PROPERTY_OF_SUGAR_CONTAINING_MOLECULES_DEFAULT;
         this.linearSugarCandidateMinSize = LINEAR_SUGAR_CANDIDATE_MIN_SIZE_DEFAULT;
         this.linearSugarCandidateMaxSize = LINEAR_SUGAR_CANDIDATE_MAX_SIZE_DEFAULT;
-
     }
 
 
@@ -1982,8 +1954,6 @@ public class SugarRemovalService {
         return tmpProcessedCandidates;
     }
 
-
-
     protected List<IAtomContainer> linearSugarCandidatesByPatternMatching(IAtomContainer aMolecule) throws NullPointerException {
         Objects.requireNonNull(aMolecule, "Given molecule is 'null'");
         IAtomContainer tmpNewMolecule = aMolecule;
@@ -2010,7 +1980,6 @@ public class SugarRemovalService {
         return tmpSugarCandidates;
     }
 
-
     protected List<IAtomContainer> combineOverlappingCandidates(List<IAtomContainer> aCandidateList) throws NullPointerException  {
         Objects.requireNonNull(aCandidateList, "Given list is 'null'.");
         if (aCandidateList.isEmpty()) {
@@ -2036,11 +2005,6 @@ public class SugarRemovalService {
         return tmpNonOverlappingSugarCandidates;
     }
 
-
-
-
-
-
     private boolean doesRingHaveEnoughOxygenAtomsAttached(int aNumberOfAtomsInRing,
                                                           int aNumberOfAttachedExocyclicOxygenAtoms) {
         if (aNumberOfAtomsInRing == 0) {
@@ -2053,8 +2017,6 @@ public class SugarRemovalService {
                 (tmpAttachedOxygensToAtomsInRingRatio >= this.attachedOxygensToAtomsInRingRatioThreshold);
         return tmpMeetsThreshold;
     }
-
-
 
     public void setAttachedOxygensToAtomsInRingRatioThreshold(double aDouble) throws IllegalArgumentException {
         //false for NaN and infinity arguments
@@ -2088,6 +2050,4 @@ public class SugarRemovalService {
         }
         this.structureToKeepModeThreshold = aThreshold;
     }
-
-
 }

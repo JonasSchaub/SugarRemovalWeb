@@ -35,6 +35,10 @@ import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+/**
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @Service
 public class MoleculeChecker {
 

@@ -29,7 +29,10 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 
 import java.io.File;
 import java.util.ArrayList;
-public interface IReader {
 
+/**
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
+public interface IReader {
     ArrayList<IAtomContainer> readMoleculesFromFile(File file);
 }

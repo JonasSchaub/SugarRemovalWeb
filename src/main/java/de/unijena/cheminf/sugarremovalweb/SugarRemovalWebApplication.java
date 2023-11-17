@@ -34,9 +34,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- *
- *
  * Configuration class defining CommandLineRunner bean init() method.
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
  */
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)

@@ -37,6 +37,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
 
+/**
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @Service
 public class UserInputMoleculeReaderService {
 

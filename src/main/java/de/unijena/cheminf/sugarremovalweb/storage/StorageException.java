@@ -24,7 +24,11 @@
 
 package de.unijena.cheminf.sugarremovalweb.storage;
 
-
+/**
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 public class StorageException extends RuntimeException {
 
     public StorageException(String message) {

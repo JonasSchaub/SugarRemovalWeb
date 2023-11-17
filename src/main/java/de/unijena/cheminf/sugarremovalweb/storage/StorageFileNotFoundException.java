@@ -24,6 +24,11 @@
 
 package de.unijena.cheminf.sugarremovalweb.storage;
 
+/**
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 public class StorageFileNotFoundException extends StorageException {
 
     public StorageFileNotFoundException(String message) {

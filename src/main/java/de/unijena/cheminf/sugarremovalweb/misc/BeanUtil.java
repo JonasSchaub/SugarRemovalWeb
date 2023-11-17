@@ -29,6 +29,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @Service
 public class BeanUtil implements ApplicationContextAware {
     private static ApplicationContext context;

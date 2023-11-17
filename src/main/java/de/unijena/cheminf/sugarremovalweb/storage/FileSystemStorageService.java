@@ -39,6 +39,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+/**
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @Service
 public class FileSystemStorageService implements StorageService{
 
@@ -49,7 +54,6 @@ public class FileSystemStorageService implements StorageService{
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
-
 
     @Override
     public void store(MultipartFile file) {

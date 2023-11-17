@@ -36,9 +36,8 @@ import java.util.Map;
 /**
  * Class to discard counter ions and other small disconnected fragments
  *
- * @author kalai
+ * @author Kalai Vanii Jayaseelan, Maria Sorokina (https://github.com/mSorok)
  */
-
 @Service
 public class MoleculeConnectivityChecker {
 

@@ -26,10 +26,13 @@ package de.unijena.cheminf.sugarremovalweb.storage;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @ConfigurationProperties("storage")
 public class StorageProperties {
-
-
     /**
      * Folder location for storing files
      */

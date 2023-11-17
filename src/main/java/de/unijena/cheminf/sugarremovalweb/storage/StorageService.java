@@ -24,13 +24,17 @@
 
 package de.unijena.cheminf.sugarremovalweb.storage;
 
-
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+/**
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 public interface StorageService {
 
     void init();

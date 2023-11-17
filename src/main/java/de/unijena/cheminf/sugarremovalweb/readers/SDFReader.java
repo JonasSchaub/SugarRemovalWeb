@@ -24,8 +24,6 @@
 
 package de.unijena.cheminf.sugarremovalweb.readers;
 
-
-
 import de.unijena.cheminf.sugarremovalweb.misc.BeanUtil;
 import de.unijena.cheminf.sugarremovalweb.misc.MoleculeChecker;
 
@@ -50,8 +48,9 @@ import java.util.UUID;
 import net.sf.jniinchi.INCHI_OPTION;
 
 /**
- * @author mSorok
  * Reads SDF files, processes the molecules and inserts in database
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
  */
 public class SDFReader implements IReader {
 

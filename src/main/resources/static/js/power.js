@@ -5,7 +5,6 @@ var selectedInputType = null;
 
 var editor;
 
-
 var submittedMoleculeData = {
     "sugarsToRemove" : [],
     "submittedDataType": "",
@@ -27,7 +26,7 @@ function fillSugarRemovalParams(obj){
         sugarRemovalParams.push("linearSugars");
     }
     if(cbs[4].checked==true){
-        sugarRemovalParams.push("terminalLnearSugars");
+        sugarRemovalParams.push("terminalLinearSugars");
     }
 
     var allWithGlyBonds = document.getElementById("cbWithGlyBonds1");
@@ -714,10 +713,6 @@ function drawMoleculeFromSmiles(smiles, inchikey) {
     }
     return canvas;
 }
-
-
-
-
 
 function fillResultsTable(processedMolecules){
     //processed Molecules is a list of objects processedMolecule

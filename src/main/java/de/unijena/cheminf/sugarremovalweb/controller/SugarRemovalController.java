@@ -57,7 +57,9 @@ import java.util.ArrayList;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * @author mSorok
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
  */
 @RestController
 @RequestMapping("molecule")
@@ -79,7 +81,6 @@ public class SugarRemovalController {
 
     @Autowired
     SugarRemovalService sugarRemovalService;
-
 
     @Autowired
     UserInputMoleculeReaderService userInputMoleculeReaderService;
@@ -185,5 +186,4 @@ public class SugarRemovalController {
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
-
 }

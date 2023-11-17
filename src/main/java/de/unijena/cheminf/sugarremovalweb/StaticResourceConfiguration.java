@@ -24,11 +24,15 @@
 
 package de.unijena.cheminf.sugarremovalweb;
 
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ *
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @Configuration
 public class StaticResourceConfiguration implements WebMvcConfigurer {
 

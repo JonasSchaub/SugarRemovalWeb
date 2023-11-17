@@ -24,20 +24,17 @@
 
 package de.unijena.cheminf.sugarremovalweb.misc;
 
-
-
 import org.springframework.stereotype.Service;
 
+/**
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 @Service
 public class SessionCleaner {
 
-
-
     public void clearSession(String sessionId){
 
-        //TODO
+        //TODO: clean upload-dir?
 
     }
-
-
 }

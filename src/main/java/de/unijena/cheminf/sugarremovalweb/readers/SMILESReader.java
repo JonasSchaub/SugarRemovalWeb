@@ -51,8 +51,9 @@ import java.util.UUID;
 import net.sf.jniinchi.INCHI_OPTION;
 
 /**
- * @author mSorok
  * Reads SMILES files, processes the molecules and inserts in database
+ *
+ * @author Maria Sorokina (https://github.com/mSorok)
  */
 public class SMILESReader implements IReader {
     ArrayList<IAtomContainer> molecules;

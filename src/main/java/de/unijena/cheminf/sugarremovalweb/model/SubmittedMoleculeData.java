@@ -26,6 +26,9 @@ package de.unijena.cheminf.sugarremovalweb.model;
 
 import java.util.ArrayList;
 
+/**
+ * @author Maria Sorokina (https://github.com/mSorok)
+ */
 public class SubmittedMoleculeData {
 
     ArrayList<String> sugarsToRemove;
