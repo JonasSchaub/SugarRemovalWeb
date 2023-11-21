@@ -24,211 +24,117 @@
 
 package de.unijena.cheminf.sugarremovalweb.misc;
 
+import de.unijena.cheminf.deglycosylation.SugarRemovalUtility;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IPseudoAtom;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.AtomTypeManipulator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
+ * Performs checks and preprocessing on input molecules like connectivity, size, atom types, pseudo atoms, etc.
+ *
  * @author Maria Sorokina (https://github.com/mSorok)
+ * @author Jonas Schaub (https://github.com/JonasSchaub)
  */
 @Service
 public class MoleculeChecker {
-
-    private static final int MIN_HEAVY_ATOM_COUNT = 5;
-    private static final int MAX_HEAVY_ATOM_COUNT = 210;
-
-
-
-    //private final String[] check = {"C", "H", "N", "O", "P", "S", "Cl", "F", "As", "Se", "Br", "I", "B", "Na", "Si", "K", "Fe"};
-    //private final HashSet<String> symbols2Check = new HashSet<String>(Arrays.asList(check));
-
-    //private final String[] forbiddenInchiKeys = {"OOHPORRAEMMMCX-UHFFFAOYSA-N"};
-    //private final  HashSet<String> inchis2Check = new HashSet<String>(Arrays.asList(forbiddenInchiKeys));
-
-
-
-    MoleculeConnectivityChecker mcc;
-
-
-
+    //<editor-fold desc="Public static final class constants">
+    //TODO: change these numbers or remove them? The SRU has no such input restrictions
+    /**
+     * minimum heavy atom count for input molecules.
+     */
+    public static final int MIN_HEAVY_ATOM_COUNT = 5;
+    //
+    /**
+     * Maximum heavy atom count for input molecules.
+     */
+    public static final int MAX_HEAVY_ATOM_COUNT = 210;
+    //</editor-fold>
+    //
+    //<editor-fold desc="Private class variables">
+    /**
+     * Molecules connectivity checker instance for checking whether a molecule consists of one or
+     * multiple disconnected parts.
+     */
+    private MoleculeConnectivityChecker mcc;
+    //</editor-fold>
+    //
+    //<editor-fold desc="Public methods">
+    //TODO: are all the checks and preprocessings necessary?
+    /**
+     * Checks and preprocesses the input molecule for deglycosylation. Selects the biggest unconnected
+     * subpart of the structure if there are multiple, filters if the molecules is too small or too big,
+     * homogenizes pseudo atom representation, sets atom types, and adds implicit hydrogen atoms if there
+     * are incomplete valences.
+     *
+     * @param molecule input molecule
+     * @return the preprocessed molecule or null if the input failed a check
+     */
     public IAtomContainer checkMolecule(IAtomContainer molecule){
-
-
-        mcc = BeanUtil.getBean(MoleculeConnectivityChecker.class);
-
-        //if(!containsStrangeElements(molecule)) {
-
-            /**
-             * Checking for connectivity and selecting the biggest component
-             */
-
-            List<IAtomContainer> listAC = mcc.checkConnectivity(molecule);
-            if( listAC.size()>=1 ){
-                IAtomContainer biggestComponent = listAC.get(0);
-                for(IAtomContainer partac : listAC){
-                    if(partac.getAtomCount()>biggestComponent.getAtomCount()){
-                        biggestComponent = partac;
-                    }
-                }
-                molecule = biggestComponent;
-
-                int nbheavyatoms = 0;
-                for(IAtom a : molecule.atoms()){
-                    if(!a.getSymbol().equals("H")){
-                        nbheavyatoms++;
-                    }
-                }
-                if(nbheavyatoms<= MIN_HEAVY_ATOM_COUNT || nbheavyatoms>=MAX_HEAVY_ATOM_COUNT){
-                    return null;
-                }
+        //check connectivity and select biggest unconnected subpart if necessary
+        this.mcc = BeanUtil.getBean(MoleculeConnectivityChecker.class);
+        List<IAtomContainer> listAC = this.mcc.checkConnectivity(molecule);
+        if (listAC.size() == 0) {
+            return null;
+        } else if (listAC.size() == 1) {
+            molecule = listAC.get(0);
+        } else {
+            //listAC.size() > 1
+            molecule = SugarRemovalUtility.selectBiggestUnconnectedFragment(molecule);
+        }
+        //determine number of heavy atoms
+        int nbheavyatoms = 0;
+        for(IAtom a : molecule.atoms()){
+            if(!a.getSymbol().equals("H")){
+                nbheavyatoms++;
             }
-            else{
-
-                return null;
+        }
+        if(nbheavyatoms < MoleculeChecker.MIN_HEAVY_ATOM_COUNT || nbheavyatoms > MoleculeChecker.MAX_HEAVY_ATOM_COUNT){
+            return null;
+        }
+        //Homogenize pseudo atoms - all pseudo atoms (PA) as a "*"
+        for (int u = 1; u < molecule.getAtomCount(); u++) {
+            if (molecule.getAtom(u) instanceof IPseudoAtom) {
+                molecule.getAtom(u).setSymbol("*");
+                molecule.getAtom(u).setAtomTypeName("X");
+                ((IPseudoAtom) molecule.getAtom(u)).setLabel("*");
             }
-
-
-            // check ID
-
-            /*if (molecule.getID() == "" || molecule.getID() == null) {
-                for (Object p : molecule.getProperties().keySet()) {
-
-                    if (p.toString().toLowerCase().contains("id")) {
-                        molecule.setID(molecule.getProperty(p.toString()));
-
-                    }
-
-                }
-                if (molecule.getID() == "" || molecule.getID() == null) {
-                    molecule.setID(molecule.getProperty("MOL_NUMBER_IN_FILE"));
-                    //this.molecule.setProperty("ID", this.molecule.getProperty("MOL_NUMBER_IN_FILE"));
-                }
-
-
-            }*/
-
-
-            //ElectronDonation model = ElectronDonation.cdk();
-            //CycleFinder cycles = Cycles.cdkAromaticSet();
-            //Aromaticity aromaticity = new Aromaticity(model, cycles);
-
-
-
-
-
-            //Homogenize pseudo atoms - all pseudo atoms (PA) as a "*"
-            for (int u = 1; u < molecule.getAtomCount(); u++) {
-                if (molecule.getAtom(u) instanceof IPseudoAtom) {
-
-                    molecule.getAtom(u).setSymbol("*");
-                    molecule.getAtom(u).setAtomTypeName("X");
-                    ((IPseudoAtom) molecule.getAtom(u)).setLabel("*");
-
-                }
-            }
-
-
-            /*SmilesGenerator sg = new SmilesGenerator(SmiFlavor.Absolute);
-            SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-            Map<Object, Object> properties = molecule.getProperties();
-            String id = molecule.getID();
+        }
+        //Addition of implicit hydrogens & atom types
+        CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(molecule.getBuilder());
+        for (int j = 0; j < molecule.getAtomCount(); j++) {
+            IAtom atom = molecule.getAtom(j);
+            IAtomType type = null;
             try {
-                String smi = sg.create(molecule);
-                molecule = sp.parseSmiles(smi);
-                molecule.setProperties(properties);
-                molecule.setID(id);
+                type = matcher.findMatchingAtomType(molecule, atom);
+                AtomTypeManipulator.configure(atom, type);
             } catch (CDKException e) {
-                e.printStackTrace();
-            }*/
-
-
-            // Addition of implicit hydrogens & atom typer
-            CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(molecule.getBuilder());
-            for (int j = 0; j < molecule.getAtomCount(); j++) {
-                IAtom atom = molecule.getAtom(j);
-                IAtomType type = null;
-                try {
-                    type = matcher.findMatchingAtomType(molecule, atom);
-                    AtomTypeManipulator.configure(atom, type);
-                } catch (CDKException e) {
-                    e.printStackTrace();
-                }
-
+                Logger.getLogger(MoleculeChecker.class.getName()).log(Level.WARNING, e.toString(), e);
             }
-
-
-            /*CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(molecule.getBuilder() );
-
-            try {
-                adder.addImplicitHydrogens(molecule);
-            } catch (CDKException e) {
-                e.printStackTrace();
-            }*/
-
-            //AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
-            //AtomContainerManipulator.removeNonChiralHydrogens(molecule);
-
-
-
-
-            try {
-                AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
-                AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(molecule);
-                //Adding aromaticity to molecules when needed
-                //aromaticity.apply(molecule);
-
-            } catch (CDKException e) {
-                e.printStackTrace();
-            }
-
-
-
-            //Fixing molecular bonds
-            /*try {
-                Kekulization.kekulize(molecule);
-
-            } catch (CDKException e1) {
-                //e1.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                //System.out.println("Could not kekulize molecule "+ this.molecule.getID());
-            }*/
-
-            return molecule;
-
+        }
+        CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(molecule.getBuilder() );
+        try {
+            adder.addImplicitHydrogens(molecule);
+        } catch (CDKException e) {
+            Logger.getLogger(MoleculeChecker.class.getName()).log(Level.WARNING, e.toString(), e);
+        }
+        try {
+            AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
+            AtomContainerManipulator.percieveAtomTypesAndConfigureUnsetProperties(molecule);
+        } catch (CDKException e) {
+            Logger.getLogger(MoleculeChecker.class.getName()).log(Level.WARNING, e.toString(), e);
+        }
+        return molecule;
     }
-
-
-
-    /*private boolean containsStrangeElements(IAtomContainer molecule) {
-        if(molecule.getAtomCount()>0) {
-            for (IAtom atom : molecule.atoms()) {
-                if (!symbols2Check.contains(atom.getSymbol())) {
-                    System.out.println("contains strange");
-                    System.out.println(atom.getSymbol());
-                    System.out.println(molecule.getID());
-                    return true;
-                }
-            }
-        }
-        return false;
-    }*/
-
-    /*public boolean isForbiddenMolecule(IAtomContainer molecule){
-        String inchikey = molecule.getProperty("INCHIKEY");
-        if(inchis2Check.contains(inchikey)){
-            return true;
-        }
-        return false;
-
-    }*/
-
-
+    //</editor-fold>
 }

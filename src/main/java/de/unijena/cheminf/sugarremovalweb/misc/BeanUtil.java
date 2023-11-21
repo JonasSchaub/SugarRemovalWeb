@@ -30,16 +30,34 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 /**
+ * Util class that allows objects to access collaborating beans within the application context.
+ *
  * @author Maria Sorokina (https://github.com/mSorok)
+ * @author Jonas Schaub (https://github.com/JonasSchaub)
  */
 @Service
 public class BeanUtil implements ApplicationContextAware {
+    /**
+     * Application context.
+     */
     private static ApplicationContext context;
+    //
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
+        BeanUtil.context = applicationContext;
     }
+    //
+    /**
+     * Retrieves a collaborating bean from the application context.
+     *
+     * @param beanClass class of the bean to retrieve
+     * @param <T> type parameter
+     * @return the collaborating bean
+     */
     public static <T> T getBean(Class<T> beanClass) {
-        return context.getBean(beanClass);
+        return BeanUtil.context.getBean(beanClass);
     }
 }

@@ -57,133 +57,170 @@ import java.util.ArrayList;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- *
+ * Backend controller of the application, handling requests.
  *
  * @author Maria Sorokina (https://github.com/mSorok)
+ * @author Jonas Schaub (https://github.com/JonasSchaub)
  */
 @RestController
 @RequestMapping("molecule")
 public class SugarRemovalController {
-
+    //TODO: Remove seemingly unused variables?
+    //<editor-fold desc="Private Autowired Spring beans">
+    /**
+     * The HTTP user request that is given.
+     */
     @Autowired
-    HttpServletRequest request;
-
+    private HttpServletRequest request;
+    //
+    /**
+     * Service to read submitted molecule files.
+     */
+    @Autowired
+    private ReaderService readerService;
+    //
+    /**
+     * Session cleaner. TODO: this does not do anything!
+     */
+    @Autowired
+    private SessionCleaner sessionCleaner;
+    //
+    /**
+     * Service class for deglycosylating molecules.
+     */
+    @Autowired
+    private SugarRemovalService sugarRemovalService;
+    //
+    /**
+     * Service for transformation of submitted data formats.
+     */
+    @Autowired
+    private UserInputMoleculeReaderService userInputMoleculeReaderService;
+    //</editor-fold>
+    //
+    //<editor-fold desc="Private final class fields">
+    /**
+     * Storage service for file handling.
+     */
     private final StorageService storageService;
-
-    public ArrayList<String> sugarRemovalParameters;
-
-
-    @Autowired
-    ReaderService readerService;
-
-    @Autowired
-    SessionCleaner sessionCleaner;
-
-    @Autowired
-    SugarRemovalService sugarRemovalService;
-
-    @Autowired
-    UserInputMoleculeReaderService userInputMoleculeReaderService;
-
+    //</editor-fold>
+    //
+    //<editor-fold desc="Private class fields">
+    /**
+     * List of submitted sugar removal parameters.
+     */
+    private ArrayList<String> sugarRemovalParameters;
+    //
+    /**
+     * Cache for return value.
+     */
+    private ArrayList<ProcessedMolecule> processedMolecules;
+    //</editor-fold>
+    //
+    //<editor-fold desc="Constructor">
+    /**
+     * Sole constructor that requires a storage service parameter for file handling.
+     *
+     * @param storageService used for FileHandling
+     */
     @Autowired
     public SugarRemovalController(StorageService storageService) {
         this.storageService = storageService;
     }
-
-    ArrayList<ProcessedMolecule> processedMolecules ;
-
-
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ArrayList<ProcessedMolecule>> catchMoleculeAndParameters(@RequestBody SubmittedMoleculeData submittedMoleculeData){
-
-        //System.out.println(submittedMoleculeData.getDataString());
-        //System.out.println(submittedMoleculeData.getSugarsToRemove());
-
-        processedMolecules = sugarRemovalService.doWork(submittedMoleculeData);
-
-        if(processedMolecules.isEmpty()){
+    //</editor-fold>
+    //
+    //<editor-fold desc="Public HTTP methods">
+    /**
+     * Performs deglycosylation on the submitted molecules and returns aglycones. Used for molecules
+     * submitted as SMILES codes, not as file
+     *
+     * @param submittedMoleculeData parsed input molecules and parameters
+     * @return response entity containing list of processed molecules
+     */
+    @PostMapping(
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+    public ResponseEntity<ArrayList<ProcessedMolecule>> catchMoleculeAndParameters(
+            @RequestBody SubmittedMoleculeData submittedMoleculeData){
+        this.processedMolecules = this.sugarRemovalService.doWork(submittedMoleculeData);
+        if(this.processedMolecules.isEmpty()){
+            return new ResponseEntity(this.processedMolecules, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(this.processedMolecules, HttpStatus.OK);
+    }
+    //
+    /**
+     * Performs deglycosylation on the submitted molecules and returns aglycones. Used for molecules
+     * submitted as uploaded files.
+     *
+     * @param submittedMoleculeData parsed input molecules and parameters
+     * @param file submitted input file
+     * @return response entity containing list of processed molecules
+     */
+    @PostMapping(
+            consumes = { "multipart/form-data" },
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+    public ResponseEntity<ArrayList<ProcessedMolecule>>  catchUploadedFileAndParameters(
+            @RequestPart("submittedMoleculeData") SubmittedMoleculeData submittedMoleculeData,
+            @RequestPart("file") MultipartFile file) {
+        if(file.isEmpty()) {
             return new ResponseEntity(processedMolecules, HttpStatus.BAD_REQUEST);
         }
-
-
+        this.storageService.store(file);
+        String loadedFile = String.valueOf(this.storageService.load(file.getOriginalFilename()));
+        this.processedMolecules = this.sugarRemovalService.doWork(submittedMoleculeData, loadedFile);
+        if(this.processedMolecules.isEmpty()){
+            return new ResponseEntity(processedMolecules, HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(processedMolecules, HttpStatus.OK);
     }
-
-
-
-    @PostMapping(consumes = { "multipart/form-data" }, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ArrayList<ProcessedMolecule>>  catchUploadedFileAndParameters(@RequestPart("submittedMoleculeData") SubmittedMoleculeData submittedMoleculeData,
-                       @RequestPart("file") MultipartFile file) {
-
-        //System.out.println(submittedMoleculeData.getDataString());
-        //System.out.println(submittedMoleculeData.getSugarsToRemove());
-
-
-        if(!file.isEmpty()) {
-            storageService.store(file);
-            String loadedFile = "upload-dir/" + file.getOriginalFilename();
-            //System.out.println(loadedFile);
-
-
-
-            processedMolecules = sugarRemovalService.doWork(submittedMoleculeData, loadedFile);
-            //System.out.println(processedMolecules);
-
-            if(processedMolecules.isEmpty()){
-                return new ResponseEntity(processedMolecules, HttpStatus.BAD_REQUEST);
-            }
-
-            return new ResponseEntity(processedMolecules, HttpStatus.OK);
-        }
-
-        return new ResponseEntity(processedMolecules, HttpStatus.BAD_REQUEST);
-    }
-
-
-
+    //
+    //TODO: are these methods needed? I guess they are placeholders for put and delete requests; implement functionality?
+    /**
+     * Placeholder PUT method.
+     *
+     * @return info string
+     */
     @PutMapping
     public String updateMoleculeAndParameters(){
-        return "update function called";
+        return "Update function called";
     }
-
+    //
+    /**
+     * Placeholder DELETE method.
+     *
+     * @return info string
+     */
     @DeleteMapping
     public String deleteMoleculeAndParameters(){
-        return "deleted molecules called";
+        return "Delete molecules called";
     }
-
-
-
-
-
-
-
-/******** FILE HANDLING ********/
-
-
-
-
-        /**
-         * Handles file not found and file not uploaded situations
-         * @param exc
-         * @return
-         */
+    //
+    /**
+     * Handles file not found and file not uploaded situations.
+     *
+     * @param exc StorageFileNotFoundException
+     * @return "not found" response entity
+     */
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
         return ResponseEntity.notFound().build();
     }
-
+    //
     /**
+     * from page / when files have been submitted, serves the files (loads).
      *
-     * @param filename
-     * @return
-     *
-     * from page / when files have been submitted, serves the files (loads)
+     * @param filename name of the file to load
+     * @return response entity with imported file as body
      */
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-        Resource file = storageService.loadAsResource(filename);
+        Resource file = this.storageService.loadAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
+    //</editor-fold>
 }

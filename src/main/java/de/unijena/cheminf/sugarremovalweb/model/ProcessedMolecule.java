@@ -29,6 +29,8 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import java.util.ArrayList;
 
 /**
+ * 
+ *
  * @author Maria Sorokina (https://github.com/mSorok)
  */
 public class ProcessedMolecule {

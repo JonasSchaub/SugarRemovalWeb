@@ -34,15 +34,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class to discard counter ions and other small disconnected fragments
+ * Class to partition multiple unconnected substructures in the same atom container into multiple
+ * instances while preserving the property annotations of the original atom container.
  *
- * @author Kalai Vanii Jayaseelan, Maria Sorokina (https://github.com/mSorok)
+ * @author Kalai Vanii Jayaseelan
+ * @author Maria Sorokina (https://github.com/mSorok)
  */
 @Service
 public class MoleculeConnectivityChecker {
-
+    /**
+     * Partitions multiple unconnected substructures in the given atom container into multiple
+     * instances. All property annotations of the given AC are set as properties of all the objects
+     * resulting from the partition.
+     *
+     * @param molecule input molecule to partition
+     * @return list of atom container instances that each contain only one connected structure from the
+     * original AC
+     */
     public List<IAtomContainer> checkConnectivity(IAtomContainer molecule) {
-
         List<IAtomContainer> curated = new ArrayList<IAtomContainer>();
         Map<Object, Object> properties = molecule.getProperties();
         IAtomContainerSet mols = ConnectivityChecker.partitionIntoMolecules(molecule);
