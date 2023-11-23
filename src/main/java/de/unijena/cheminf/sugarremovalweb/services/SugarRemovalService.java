@@ -164,7 +164,7 @@ public class SugarRemovalService {
 
     ProcessedMolecule removeSugarsFromAtomContainer(IAtomContainer  moleculeToProcess, SubmittedMoleculeData submittedMoleculeData){
 
-        ProcessedMolecule molecule = new ProcessedMolecule();
+        ProcessedMolecule processedMolecule = new ProcessedMolecule();
 
         SmilesGenerator smilesGenerator = new SmilesGenerator(SmiFlavor.Unique);
 
@@ -176,16 +176,11 @@ public class SugarRemovalService {
         options.add(INCHI_OPTION.AuxNone);
 
         try {
-            molecule.setSmiles(smilesGenerator.create(moleculeToProcess));
+            processedMolecule.setSmiles(smilesGenerator.create(moleculeToProcess));
         } catch (CDKException e) {
             e.printStackTrace();
             return null;
         }
-
-        //molecule.setMolecule(moleculeToProcess);
-        molecule.sugarsToRemove = new ArrayList<>();
-        molecule.deglycosylatedMoietiesSmiles = new ArrayList<>();
-        molecule.sugarMoietiesRemovedSmiles = new ArrayList<>();
 
         //InChIGenerator gen = null;
         try {
@@ -198,7 +193,7 @@ public class SugarRemovalService {
             if(!submittedMoleculeData.getSugarsToRemove().isEmpty()) {
 
                 if (submittedMoleculeData.getSugarsToRemove().contains("allSugars")) {//remove all the sugars
-                    molecule.sugarsToRemove.add("all");
+                    processedMolecule.addSugarRemovalSettingsKeywords("all");
 
                     setRemoveLinearSugarsInRing(false);
                     setPropertyOfSugarContainingMolecules(true);
@@ -206,7 +201,7 @@ public class SugarRemovalService {
 
                     if (submittedMoleculeData.getSugarsToRemove().contains("allSugarsWithGlyBonds")) {
                         setDetectGlycosidicBond(true);
-                        molecule.sugarsToRemove.add("withGlyBonds");
+                        processedMolecule.addSugarRemovalSettingsKeywords("withGlyBonds");
                     }
                     else{
                         setDetectGlycosidicBond(false);
@@ -221,18 +216,18 @@ public class SugarRemovalService {
 
                         if(listAC.size()>1){
                             for(IAtomContainer moiety : listAC){
-                                molecule.deglycosylatedMoietiesSmiles.add(smilesGenerator.create(moiety));
+                                processedMolecule.addDeglycosylatedMoietiesSmiles(smilesGenerator.create(moiety));
                             }
 
                         }else{
-                            molecule.deglycosylatedMoietiesSmiles.add(smilesGenerator.create(moleculeToProcess));
+                            processedMolecule.addDeglycosylatedMoietiesSmiles(smilesGenerator.create(moleculeToProcess));
                         }
 
                         if(results.size()>1){
 
                             for(int i=1; i<results.size();i++){
                                 //extracting the removed sugars
-                                molecule.sugarMoietiesRemovedSmiles.add(smilesGenerator.create(results.get(i)));
+                                processedMolecule.addSugarMoietiesRemovedSmiles(smilesGenerator.create(results.get(i)));
                             }
                         }
 
@@ -246,7 +241,7 @@ public class SugarRemovalService {
 
                     if (submittedMoleculeData.getSugarsToRemove().contains("ringSugars")) {
 
-                        molecule.sugarsToRemove.add("ring");
+                        processedMolecule.addSugarRemovalSettingsKeywords("ring");
 
                         setRemoveOnlyTerminalSugars(false);
 
@@ -255,7 +250,7 @@ public class SugarRemovalService {
 
                         if (submittedMoleculeData.getSugarsToRemove().contains("ringsWithGlyBonds")) {
                             setDetectGlycosidicBond(true);
-                            molecule.sugarsToRemove.add("withGlyBonds");
+                            processedMolecule.addSugarRemovalSettingsKeywords("withGlyBonds");
                         }else{
                             setDetectGlycosidicBond(false);
                         }
@@ -275,7 +270,7 @@ public class SugarRemovalService {
                     }
                     if (submittedMoleculeData.getSugarsToRemove().contains("terminalRingSugars")) {
 
-                        molecule.sugarsToRemove.add("terminalRing");
+                        processedMolecule.addSugarRemovalSettingsKeywords("terminalRing");
 
                         setRemoveOnlyTerminalSugars(true);
 
@@ -283,7 +278,7 @@ public class SugarRemovalService {
                         setPropertyOfSugarContainingMolecules(true);
 
                         if (submittedMoleculeData.getSugarsToRemove().contains("termRingsWithGlyBonds")) {
-                            molecule.sugarsToRemove.add("withGlyBonds");
+                            processedMolecule.addSugarRemovalSettingsKeywords("withGlyBonds");
                             setDetectGlycosidicBond(true);
                         }
 
@@ -300,7 +295,7 @@ public class SugarRemovalService {
 
                     }
                     if (submittedMoleculeData.getSugarsToRemove().contains("linearSugars")) {
-                        molecule.sugarsToRemove.add("linear");
+                        processedMolecule.addSugarRemovalSettingsKeywords("linear");
                         setRemoveOnlyTerminalSugars(false);
                         setRemoveLinearSugarsInRing(false);
                         setPropertyOfSugarContainingMolecules(true);
@@ -318,7 +313,7 @@ public class SugarRemovalService {
                     }
                     if (submittedMoleculeData.getSugarsToRemove().contains("terminalLinearSugars")) {
 
-                        molecule.sugarsToRemove.add("terminalLinear");
+                        processedMolecule.addSugarRemovalSettingsKeywords("terminalLinear");
                         setRemoveOnlyTerminalSugars(true);
                         setRemoveLinearSugarsInRing(false);
                         setPropertyOfSugarContainingMolecules(true);
@@ -341,17 +336,17 @@ public class SugarRemovalService {
 
                         if(listAC.size()>1){
                             for(IAtomContainer moiety : listAC){
-                                molecule.deglycosylatedMoietiesSmiles.add(smilesGenerator.create(moiety));
+                                processedMolecule.addDeglycosylatedMoietiesSmiles(smilesGenerator.create(moiety));
                             }
 
                         }else{
-                            molecule.deglycosylatedMoietiesSmiles.add(smilesGenerator.create(moleculeToProcess));
+                            processedMolecule.addDeglycosylatedMoietiesSmiles(smilesGenerator.create(moleculeToProcess));
                         }
 
                         if( results!=null && results.size()>1){
                             for(int i=1; i<results.size();i++){
                                 //extracting the removed sugars
-                                molecule.sugarMoietiesRemovedSmiles.add(smilesGenerator.create(results.get(i)));
+                                processedMolecule.addSugarMoietiesRemovedSmiles(smilesGenerator.create(results.get(i)));
                             }
                         }
 
@@ -373,19 +368,19 @@ public class SugarRemovalService {
 
         //add a nice way of dealing with long smiles
 
-
-        molecule.displaySmiles = molecule.smiles.replaceAll("(.{40})", "$0 ").trim();
+        //adds a space after every 40 characters to introduce line breaks in the display table
+        processedMolecule.setDisplaySmiles(processedMolecule.getSmiles().replaceAll("(.{40})", "$0 ").trim());
 
 
         //check if any sugar was removed
-        if(!molecule.deglycosylatedMoietiesSmiles.isEmpty() && !molecule.getSmiles().equals( molecule.deglycosylatedMoietiesSmiles.get(0) )){
-            molecule.setSugarWasRemoved(true);
+        if(!processedMolecule.getDeglycosylatedMoietiesSmiles().isEmpty() && !processedMolecule.getSmiles().equals(processedMolecule.getDeglycosylatedMoietiesSmiles().get(0) )){
+            processedMolecule.setSugarWasRemoved(true);
         }
         //System.out.println(molecule.sugarWasRemoved);
 
 
 
-        return molecule;
+        return processedMolecule;
     }
 
     /**
